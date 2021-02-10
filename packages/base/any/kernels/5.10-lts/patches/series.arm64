@@ -17,3 +17,4 @@
 0021-tn48m-add-sfp-eeprom-support-to-ethtool.patch
 0022-delta-tn48m-dn-series-dts.patch
 0023-accton-as4564-26p.patch
+0023-net-phylink-Add-SFP-remove-handler.patch
