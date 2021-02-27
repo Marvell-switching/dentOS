@@ -19,3 +19,4 @@
 0023-accton-as4564-26p.patch
 0023-net-phylink-Add-SFP-remove-handler.patch
 0024-net-sfp-add-quirk-for-Finisar-FTLF8536P4BCL.patch
+0025-net-phylink-Treat-speed-change-as-a-major-change.patch
