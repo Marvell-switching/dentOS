@@ -18,3 +18,4 @@
 0022-delta-tn48m-dn-series-dts.patch
 0023-net-phylink-Add-SFP-remove-handler.patch
 0024-net-sfp-add-quirk-for-Finisar-FTLF8536P4BCL.patch
+0025-net-phylink-Treat-speed-change-as-a-major-change.patch
