@@ -20,3 +20,4 @@
 0024-net-sfp-add-quirk-for-Finisar-FTLF8536P4BCL.patch
 0025-net-phylink-Treat-speed-change-as-a-major-change.patch
 0026-switchdev-prestera-v2.9.0.patch
+0027-tc_nat-add-action-offload.patch.patch
