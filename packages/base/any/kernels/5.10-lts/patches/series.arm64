@@ -23,3 +23,4 @@
 0027-tc_nat-add-action-offload.patch.patch
 0028-upstream-net-core-devlink-add-dropped-stats-field-fo.patch
 0029-net-core-devlink-use-right-genl-user_ptr-when-handli.patch
+0030-Kernel-has-no-interface-to-publish-the-devlink-port-.patch
