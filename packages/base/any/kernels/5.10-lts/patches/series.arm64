@@ -28,3 +28,4 @@
 0031-prestera-switchdev-v2.10.0.patch
 0032-bridge_isolated_ports_allow_offloading.patch
 0033-Allow-TC-NAT-to-handle-offloaded-statistics.patch
+0034-Change-HW-OFFLOAD-timeout-to-60-sec.patch
