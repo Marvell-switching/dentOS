@@ -30,3 +30,4 @@
 0033-Allow-TC-NAT-to-handle-offloaded-statistics.patch
 0034-Change-HW-OFFLOAD-timeout-to-60-sec.patch
 0035-netfilter-nf_flow_table_free-flush-flows-before-clea.patch
+0036-switchdev-prestera-v2.11.0.patch
