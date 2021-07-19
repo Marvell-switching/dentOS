@@ -31,3 +31,4 @@
 0034-Change-HW-OFFLOAD-timeout-to-60-sec.patch
 0035-netfilter-nf_flow_table_free-flush-flows-before-clea.patch
 0036-switchdev-prestera-v2.11.0.patch
+0037-switchdev-prestera-v2.12.0.patch
