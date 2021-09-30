@@ -1,6 +1,6 @@
-From 4e977aa42340d42c3b0868495d9c99cbb8ff938e Mon Sep 17 00:00:00 2001
+From 278427981c6260565e7ac93b0828aefdf9389b62 Mon Sep 17 00:00:00 2001
 From: Taras Chornyi <taras.chornyi@plvision.eu>
-Date: Wed, 10 Feb 2021 10:10:22 +0200
+Date: Sat, 21 Aug 2021 17:34:06 +0300
 Subject: [PATCH] net: prestera: Update prestera driver
 
 New features:
@@ -42,7 +42,7 @@ Signed-off-by: Taras Chornyi <taras.chornyi@plvision.eu>
  .../ethernet/marvell/prestera/prestera_hw.h   |  428 ++-
  .../ethernet/marvell/prestera/prestera_log.c  |  203 ++
  .../ethernet/marvell/prestera/prestera_log.h  |   58 +
- .../ethernet/marvell/prestera/prestera_main.c | 2599 ++++++++++++--
+ .../ethernet/marvell/prestera/prestera_main.c | 2602 ++++++++++++--
  .../ethernet/marvell/prestera/prestera_pci.c  |  901 +++--
  .../marvell/prestera/prestera_router.c        | 3069 +++++++++++++++++
  .../ethernet/marvell/prestera/prestera_rxtx.c |  878 +----
@@ -51,7 +51,7 @@ Signed-off-by: Taras Chornyi <taras.chornyi@plvision.eu>
  .../marvell/prestera/prestera_rxtx_sdma.c     |  769 +++++
  .../marvell/prestera/prestera_switchdev.c     | 2058 ++++++-----
  .../marvell/prestera/prestera_switchdev.h     |   13 -
- 28 files changed, 12625 insertions(+), 4201 deletions(-)
+ 28 files changed, 12626 insertions(+), 4203 deletions(-)
  create mode 100644 drivers/net/ethernet/marvell/prestera/prestera_acl.c
  create mode 100644 drivers/net/ethernet/marvell/prestera/prestera_debugfs.c
  create mode 100644 drivers/net/ethernet/marvell/prestera/prestera_debugfs.h
@@ -7414,10 +7414,10 @@ index 000000000..aacb296c7
 +
 +#endif /* _MVSW_PRESTERA_LOG_H_ */
 diff --git a/drivers/net/ethernet/marvell/prestera/prestera_main.c b/drivers/net/ethernet/marvell/prestera/prestera_main.c
-index da4b286d1..05c9dc8f2 100644
+index feb69fcd9..05c9dc8f2 100644
 --- a/drivers/net/ethernet/marvell/prestera/prestera_main.c
 +++ b/drivers/net/ethernet/marvell/prestera/prestera_main.c
-@@ -1,625 +1,2502 @@
+@@ -1,626 +1,2502 @@
 -// SPDX-License-Identifier: BSD-3-Clause OR GPL-2.0
 -/* Copyright (c) 2019-2020 Marvell International Ltd. All rights reserved */
 -
@@ -9866,9 +9866,11 @@ index da4b286d1..05c9dc8f2 100644
 +
  			if (!delayed_work_pending(caching_dw))
 -				queue_delayed_work(prestera_wq, caching_dw, 0);
-+				queue_delayed_work(mvsw_pr_wq, caching_dw, 0);
- 		} else {
+-		} else if (netif_running(port->dev) &&
+-			   netif_carrier_ok(port->dev)) {
 -			netif_carrier_off(port->dev);
++				queue_delayed_work(mvsw_pr_wq, caching_dw, 0);
++		} else {
 +			port->hw_duplex = 0;
 +			port->hw_speed = 0;
 +#ifdef CONFIG_PHYLINK
@@ -10259,7 +10261,7 @@ index da4b286d1..05c9dc8f2 100644
  	int err;
  
  	sw = prestera_devlink_alloc();
-@@ -629,41 +2506,63 @@ int prestera_device_register(struct prestera_device *dev)
+@@ -630,41 +2506,63 @@ int prestera_device_register(struct prestera_device *dev)
  	dev->priv = sw;
  	sw->dev = dev;
  
@@ -19062,5 +19064,5 @@ index 606e21d23..000000000
 -
 -#endif /* _PRESTERA_SWITCHDEV_H_ */
 -- 
-2.17.1
+2.30.2
 
