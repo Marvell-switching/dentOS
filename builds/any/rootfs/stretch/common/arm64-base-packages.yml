@@ -12,3 +12,6 @@
 - mft
 - mrvl-fw-image
 - keepalived
+- sw-agentd
+- conntrack
+- jq

@@ -37,3 +37,8 @@
 0041-net-prestera-Enable-autoneg-for-1000BASE-X.patch
 0042-net-phylink-sfp-Add-quirk-for-FINISAR-10G-modules.patch
 0043-switchdev-prestera-v3.1.1.patch
+0044-prestera-switchdev-prestera-trampoline.patch
+0045-Marvell-add-support-for-AC5x.patch
+0046-marvell-ac5x-trampoline-dts.patch
+0047-marvell-trampoline-Kconfig-shm.patch
+0048-ac5x-trampoline-db-dts.patch
