@@ -1,0 +1,160 @@
+Marvell® Switchdev Slim (Single CPU) mode guide
+Switchdev Slim mode guide
+User Guide
+Revision 1.0
+
+Document Purpose
+Describes how to start up using the Switchdev Slim (Single CPU) mode from the software point of view for the AC5X SOC/Switching ASIC
+
+1 Switchdev Slim mode getting started
+1.1 DENT getting started
+1.1.1 Preparing the Linux build host
+DENT requires a Linux based host which can run docker in order to build. As DENT is a Debian-based Linux distribution, we recommend using Ubuntu or Debian as the build host.
+
+For Debian/Ubuntu please run: sudo apt-get update -y sudo apt-get install build-essential git libtool pkg-config intltool-debian flex bison unzip python
+
+Follow the Docker installation instructions here: https://docs.docker.com/engine/install/ubuntu/
+
+1.1.2 Getting the files
+mkdir slim && cd slim
+
+git clone https://github.com/Marvell-switching/dentOS
+
+cd dentOS
+
+git checkout slim
+
+1.1.3 Updating the files
+cd tools Create the file flat-image-tree.conf in tools/ with the following content (We recommend using Common Linux Editors such as vi, vim, nano, emacs or gedit ): <<<<<<<<<<< Start File Content >>>>>>>>>>>>>>>>>>
+
+kernel_powerpc_load=<0x0>
+kernel_powerpc_entry=<0x0>
+kernel_arm32_load=<0x61008000>
+kernel_arm32_entry=<0x61008000>
+kernel_arm64_load=<0x2>,<0x02000000>
+kernel_arm64_entry=<0x2>,<0x02000000>
+initrd_powerpc_load=<0x1000000>
+initrd_powerpc_entry=<0x1000000>
+initrd_arm32_load=<0x0000000>
+initrd_arm32_entry=<0x0000000>
+initrd_arm64_load=<0x0000000>
+initrd_arm64_entry=<0x0000000>
+dtb_arm64_load=<0x2>,<0x01000000>
+dtb_arm64_entry=<0x2>,<0x01000000>
+
+<<<<<<<<<<< End File Content >>>>>>>>>>>>>>>>>>
+
+builds/any/rootfs/stretch/common/arm64-base-packages.yml:
+Add sw-agentd to the file content
+
+
+cd ../.. git clone https://github.com/Marvell-switching/dent-artifacts cd dent-artifacts git checkout slim
+
+cp ../dentOS/sm/dent-artifacts/REPO/stretch/packages/binary-arm64/sw-agentd_3.2.2_arm64.deb .
+
+cd ../..
+
+1.1.4 Defining a new platform (board)
+An Example for Marvell AC5X DB board is available here:
+
+https://github.com/Marvell-switching/dentOS/tree/slim/packages/platforms/marvell/arm64/ac5x-db
+
+All mentioned files are subdirectories of slim/dentOS .
+
+Selecting platform name:
+
+This issue might seem trivial but the DENT platform name must match exactly the ONIE platform name. Also the platform name referred from init.py must match it. Platform naming convention is also important and goes like arch-vendor-board-revision, for example: arm64-marvell-ac5x-db-r0
+
+Names must match the ONIE platform name, and match all across directories and file content, don't mix underscores (_) and dashes (-) , file content especially refers to:
+
+modules/PKG.yml modules/builds/Makefile platform-config/r0/PKG.yml platform-config/r0/src/python/$PLATFORM/init.py (PLATFORM) platform-config/r0/src/lib/$PLATFORM.yml onlp/PKG.yml onlp/builds/onlpdump/Makefile onlp/builds/lib/Makefile
+
+Modify setup.env and Append the platform name to ONLPM_OPTION_PLATFORM_ALLOWLIST="\
+
+packages/base/any/kernels/5.10-lts/patches/series.arm64 Append the name of the patch filenames required for the platform based drivers (e.g. CPLD, SFPs, PSU, thermal, etc.)
+
+platform-config/r0/src/python/$PLATFORM/init.py (PLATFORM) :
+
+Modify the following: Python Class name – per new board
+MANUFACTURER – manufacturer name
+PRIVATE_ENTERPRISE_NUMBER (Taken from here: https://www.iana.org/assignments/enterprise-numbers/enterprise-numbers )
+PLATFORM – platform name
+MODEL – switch model name
+SYS_OBJECT_ID - PRIVATE_ENTERPRISE_NUMBER.5.1
+
+dentOS/packages/platforms/$VENDOR/$ARCH/$BOARD/platform-config/$REVISION/src/lib/$platform.yml :
+
+Need to customize the boldface parts – platform name and device tree binary name… Optionally, if the u-boot SPI environment location was changed, also need to modify the environment section below
+
+platform name:  
+  flat_image_tree:  
+    kernel:  
+      <<: *arm64-kernel-5-10  
+    dtb:  
+      =: platform-dtb-name.dtb  
+      <<: *arm64-kernel-5-10-package  
+    itb:  
+      <<: *arm64-itb  
+ 
+  loader:
+    device: /dev/mmcblk0
+    ##partition: /dev/mmcblk0p1
+    loadaddr: 0x220000000
+    nos_bootcmds: *mmc_bootcmds
+ 
+    setenv:
+    - bootargs: >-
+        $console
+        onl_platform=$onl_platform
+        arm-smmu.disable_bypass=n
+        maxcpus=4
+        pci=pcie_bus_safe
+        cpuidle.off=1
+ 
+    environment:
+    - device: /dev/mtd1
+      env_offset: 0x00000000
+      env_size: 0x00010000
+      sector_size: 0x00010000
+ 
+  network:
+    interfaces:
+      eth2:
+        name: eth2
+ 
+    installer:
+  - ONL-BOOT:
+      =: 128MiB
+      format: ext2
+      ##format: raw
+  - ONL-CONFIG:
+      =: 128MiB
+      format: ext4
+  - ONL-IMAGES:
+      =: 1GiB
+      format: ext4
+  - ONL-DATA:
+      =: 2GiB
+      format: ext4
+Add the dtb name to the end of packages/base/any/kernels/5.10-lts/configs/arm64-all/Makefile
+
+1.1.5 Building DENT
+sudo docker/tools/onlbuilder -9
+source setup.env
+apt-cacher-ng
+make rebuild
+make arm64
+
+1.1.6 Rebuilding DENT
+Run the following commands before executing the “Building DENT” procedure above:
+
+rm make/modules/modules.*
+rm packages/.PKGs.cache.stretch
+rm builds/.PKGs.cache.stretch
+rm builds/arm64/rootfs/builds/stretch/rootfs-arm64.d/var/cache/apt/pkgcache.bin
+rm builds/arm64/rootfs/builds/stretch/rootfs-arm64.d/var/cache/apt/srcpkgcache.bin
+rm REPO/stretch/packages/binary-arm64/Packages
+rm -rf builds/arm64/rootfs/builds/stretch/
+
+sudo find REPO/stretch/packages/ packages/ -name *.deb -exec rm {} ;
+sudo rm -rf REPO/stretch/extracts/ RELEASE/ builds/arm64/rootfs/builds/stretch/ packages/base/arm64/kernels/kernel-5.10-lts-arm64-all/builds/stretch
