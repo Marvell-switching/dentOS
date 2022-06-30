@@ -48,9 +48,13 @@ builds/any/rootfs/stretch/common/arm64-base-packages.yml:
 Add sw-agentd to the file content
 
 
-cd ../.. git clone https://github.com/Marvell-switching/dent-artifacts cd dent-artifacts git checkout slim
+cd ../..
+git clone https://github.com/Marvell-switching/dent-artifacts
+cd dent-artifacts
+git checkout slim
 
-cp ../dentOS/sm/dent-artifacts/REPO/stretch/packages/binary-arm64/sw-agentd_3.2.2_arm64.deb .
+cd ../dentOS/sm/dent-artifacts
+cp -r ../../../dent-artifacts/* .
 
 cd ../..
 
@@ -144,6 +148,10 @@ source setup.env
 apt-cacher-ng
 make rebuild
 make arm64
+
+Output ONIE installer is placed in the following directory: RELEASE/stretch/arm64/DENTOS-...ARM64_INSTALLED_INSTALLER
+From the ONIE, scp the file and install it using the following command:
+onie-nos-install DENTOS-...�ARM64_INSTALLED_INSTALLER
 
 1.1.6 Rebuilding DENT
 Run the following commands before executing the “Building DENT” procedure above:
