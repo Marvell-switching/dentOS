@@ -6,5 +6,5 @@ K_SUFFIX :=
 K_PATCH_DIR := $(THIS_DIR)/patches
 K_MODSYNCLIST := tools/objtool
 K_GIT := 1
-K_GIT_URL := https://github.com/dentproject/linux.git
-K_GIT_BRANCH := dent-linux-5.15.y
+K_GIT_URL := https://github.com/Marvell-switching/linux.git
+K_GIT_BRANCH := dent-linux-5.15.y-rebase
