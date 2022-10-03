@@ -2,16 +2,16 @@
 
 ######################################################################
 #
-# platform-config for AC5x DB board
+# platform-config for AC5x
 #
 ######################################################################
 
-arm64-marvell-ac5x-db-r0:
+arm64-marvell-ac5x-r0:
   flat_image_tree:
     kernel:
       <<: *arm64-kernel-5-15
     dtb:
-      =: ac5_db_trampoline.dtb
+      =: ac5_as4564_trampoline.dtb
       <<: *arm64-kernel-5-15-package
     itb:
       <<: *arm64-itb
@@ -51,3 +51,9 @@ arm64-marvell-ac5x-db-r0:
   - ONL-DATA:
       =: 2GiB
       format: ext4
+
+  network:
+    interfaces:
+      ma1:
+        name: eth2
+
